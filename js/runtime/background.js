@@ -3,7 +3,8 @@ import Sprite from '../base/sprite'
 const screenWidth  = window.innerWidth
 const screenHeight = window.innerHeight
 
-const BG_IMG_SRC   = 'images/kaer.jpg'
+let bg = new Image()
+bg.src = 'images/kaer.jpg'
 let logo = new Image()
 logo.src = 'images/logo.png'
 const BG_WIDTH     = 512
@@ -15,16 +16,16 @@ const BG_HEIGHT    = 512
  */
 export default class BackGround extends Sprite {
   constructor(ctx) {
-    super(BG_IMG_SRC, BG_WIDTH, BG_HEIGHT)
+    super()
 
     this.render(ctx)
 
     this.top = 0
   }
 
-  update() {
+  update(ctx) {
     // this.top += 2
-
+    
     // if ( this.top >= screenHeight )
     //   this.top = 0
   }
@@ -37,13 +38,13 @@ export default class BackGround extends Sprite {
    */
   render(ctx) {
     ctx.drawImage(
-      this.img,
+      bg,
       0,
       0,
-      this.width,
-      this.height,
+      1280,
+      720,
       0,
-      this.top,
+      0,
       screenWidth,
       screenHeight
     )
@@ -53,10 +54,11 @@ export default class BackGround extends Sprite {
       0,
       350,
       150,
-      screenWidth/2 -200,
-      screenHeight/2 - 100,
-      screenWidth/2 + 150,
-      screenHeight/2 + 50
+      screenWidth/2 -300,
+      screenHeight/2 - 150,
+      screenWidth/2 + 50,
+      screenHeight/2 
     )
+    
   }
 }

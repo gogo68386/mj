@@ -15,7 +15,6 @@ let bc = new Image()
 bc.src = 'images/bg2.png'
 
 var single = 0
-var makesure = 0
 
 export default class GameBegin {
     renderGameBegin(ctx, score) {
@@ -75,15 +74,19 @@ export default class GameBegin {
         screenHeight / 2 - 100,
         120, 40
       )
-      ctx.drawImage(
-        pai,
-        ctx.showcard * (1620 / 36), 0, 44, 70,
-        screenWidth / 2,
-        screenHeight / 2,
-        30, 50
-      )
+      if(ctx.makesure == 1)
+      {
+        ctx.drawImage(
+          pai,
+          ctx.showcard * (1620 / 36), 0, 44, 70,
+          screenWidth / 2,
+          screenHeight / 2,
+          30, 50
+        )
         
-      console.log("csctx.showcard=", ctx.showcard);
+      }
+      
+      // console.log("card1=", ctx.showcard);
       ctx.width = screenWidth
       ctx.height = screenHeight
       for (this.i = 0;this.i<=13;this.i++)  
@@ -98,9 +101,6 @@ export default class GameBegin {
           }
         }
       }  
-      
-      
-     
 
       for(var i=0;i<=13;i++)
       {
@@ -128,65 +128,53 @@ export default class GameBegin {
             screenHeight / 2 - 100 + 160,
             30, 50
           )
-        if(ctx.data[i] != ctx.card1){
-          single = 0;
-        }
-        if(!single){
-          ctx.card1 = ctx.data[i];
-          const query1 = ctx.bmob.Query('_Role');
-          query1.get('s0zG3339').then(res => {
-            console.log("success=", res.userobjectid,res.userobjectid1,res.userobjectid2,res.userobjectid3);
-            ctx.objectid1 = res.userobjectid
-            ctx.objectid2 = res.userobjectid1
-            ctx.objectid3 = res.userobjectid2
-            ctx.objectid4 = res.userobjectid3
-          }).catch(err => {
-            console.log(err)
-          })
-          console.log("ctx.objectid1=", ctx.objectid1);
-
-          if (ctx.objectid1) {
-            console.log("cs:ctx.card1",ctx.card1);
-            const query = ctx.bmob.Query('_User');
-            query.get(ctx.objectid).then(res => {
-              ctx.showcard = res.cardData1
-            }).catch(err => {
-              console.log(err)
-            })
-            query.get(ctx.objectid1).then(res => {
-              console.log(res)
-              res.set('cardData1', ctx.card1)
-              res.save()
-            }).catch(err => {
-              console.log(err)
-            })
-            query.get(ctx.objectid2).then(res => {
-              console.log(res)
-              res.set('cardData1', ctx.card1)
-              res.save()
-            }).catch(err => {
-              console.log(err)
-            })
-            query.get(ctx.objectid3).then(res => {
-              console.log(res)
-              res.set('cardData1', ctx.card1)
-              res.save()
-            }).catch(err => {
-              console.log(err)
-            })
-            query.get(ctx.objectid4).then(res => {
-              console.log(res)
-              res.set('cardData1', ctx.card1)
-              res.save()
-            }).catch(err => {
-              console.log(err)
-            })
-            makesure = 0;
-            
+          if (ctx.data[i] != ctx.card1) {
+            single = 0;
           }
-          
-          single = 1;
-        }
+          if (!single) {
+            ctx.card1 = ctx.data[i];
+
+            if (ctx.objectid1) {
+              console.log("ctx.data =",ctx.data[i]);
+              console.log("input=", ctx.card1);
+              const query = ctx.bmob.Query('_User');
+              query.get(ctx.objectid1).then(res => {
+                console.log(res)
+                res.set('cardData1', ctx.card1)
+                res.save()
+              }).catch(err => {
+                console.log(err)
+              })
+              query.get(ctx.objectid2).then(res => {
+                console.log(res)
+                res.set('cardData1', ctx.card1)
+                res.save()
+              }).catch(err => {
+                console.log(err)
+              })
+              query.get(ctx.objectid3).then(res => {
+                console.log(res)
+                res.set('cardData1', ctx.card1)
+                res.save()
+              }).catch(err => {
+                console.log(err)
+              })
+              query.get(ctx.objectid4).then(res => {
+                console.log(res)
+                res.set('cardData1', ctx.card1)
+                res.save()
+              }).catch(err => {
+                console.log(err)
+              })
+              //   query.get(ctx.objectid).then(res => {
+              //     ctx.showcard = res.cardData1
+              //   }).catch(err => {
+              //     console.log(err)
+              //   })
+              //   makesure = 1;
+            }
+            single = 1;
+          }
         }
         else
         {    

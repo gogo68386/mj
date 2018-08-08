@@ -35,7 +35,6 @@ export default class Gamehu {
     }).catch(err => {
       console.log(err)
     });
-    
   }
 
   alert(msg) {
@@ -170,6 +169,15 @@ export default class Gamehu {
             console.log(err)
           });
         }
+        query1.get('s0zG3339').then(res => {
+          console.log("success=", res.userobjectid, res.userobjectid1, res.userobjectid2, res.userobjectid3);
+          ctx.objectid1 = res.userobjectid
+          ctx.objectid2 = res.userobjectid1
+          ctx.objectid3 = res.userobjectid2
+          ctx.objectid4 = res.userobjectid3
+        }).catch(err => {
+          console.log(err)
+        })
         join = 1;
       }
     }

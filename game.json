@@ -1,3 +1,4 @@
 {
-    "deviceOrientation": "landscape"
+  "workers": "workers",
+  "deviceOrientation": "landscape"
 }

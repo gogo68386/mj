@@ -37,15 +37,18 @@ export default class Main {
     ctx.masterKey
     ctx.hu = 0  //胡牌的堆数
     ctx.c = 0.0 //游戏场景的id
+    ctx.worker = 0
     ctx.objectid1 = 0
     ctx.objectid2 = 0
     ctx.objectid3 = 0
     ctx.objectid4 = 0
     ctx.showcard = 0 //打出去的牌
+    ctx.makesure = 0
     this.time = 0
     this.single = 0
     ctx.data = []
     ctx.card1 = 0
+    ctx.changecard = 1
     ctx.phu = []
     for (this.i = 0; this.i <= 13; this.i++) {
       var num1 = Math.floor(Math.random() * 34)
@@ -133,6 +136,8 @@ export default class Main {
       ctx.status = !ctx.status
     }
 
+    
+
     if (ctx.status)
     {
       if(x <= ctx.width && x >= ctx.width -100 && 
@@ -174,6 +179,18 @@ export default class Main {
       });
       ctx.cvalue = 3;
     }
+    setTimeout(function () {
+      if (ctx.objectid1) {
+        const query = ctx.bmob.Query('_User');
+        query.get(ctx.objectid).then(res => {
+          ctx.showcard = res.cardData1
+        }).catch(err => {
+          console.log(err)
+        })
+        console.log("input=", ctx.showcard);
+        ctx.makesure = 1
+      }
+    }, 500)
 
     if (x >= screenWidth / 2 + 127 && x <= screenWidth / 2 + 252 && y >= 
       screenHeight / 2 + 12 && y <= screenHeight / 2 + 34 && ctx.loginon != 2)
@@ -233,6 +250,10 @@ export default class Main {
       canvas.addEventListener('touchstart', this.touchHandler);
       this.onKeyboardOK = this.onKeyboardConfirm.bind(this);
       wx.onKeyboardConfirm(this.onKeyboardConfirm);
+      ctx.worker = wx.createWorker('workers/request/index.js')
+      ctx.worker.postMessage({
+        msg: ctx
+      })
       ctx.loginon = 0;
       this.time = 1;
     }
@@ -272,7 +293,7 @@ export default class Main {
     {
         this.room.renderroom(ctx)
     }
-    this.gameinfo.renderGameScore(ctx, ctx.c)
+    // this.gameinfo.renderGameScore(ctx)
     // this.gameinfo.renderGameScore(ctx, ctx.flag)
     // 游戏结束停止帧循环
     // if (databus.gameOver) {
@@ -291,7 +312,7 @@ export default class Main {
     if (databus.gameOver)
       return;
 
-    this.bg.update()
+    this.bg.update(ctx)
 
     databus.bullets
       .concat(databus.enemys)

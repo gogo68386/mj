@@ -14,15 +14,17 @@ export default class Loginon {
       160, 178
     )
     ctx.loginon = 0.5
+    ctx.fillStyle = "#ffffff"
+    ctx.font = "15px Arial"
     ctx.fillText(
       ctx.username,
-      screenWidth / 2 + 148,
-      screenHeight / 2 - 35
+      screenWidth / 2 + 158,
+      screenHeight / 2 - 37
     )
     ctx.fillText(
       ctx.password,
-      screenWidth / 2 + 148,
-      screenHeight / 2 - 9
+      screenWidth / 2 + 158,
+      screenHeight / 2 - 11
     )
   }
 } 
