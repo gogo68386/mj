@@ -22,16 +22,24 @@ export default class Main {
     ctx.objectid = 0
     ctx.width = 0
     ctx.height = 0
+    ctx.i = 0
     ctx.status = false
     this.aniId = 0
-    ctx.username = 'username'
-    ctx.password = 'password'
+    ctx.username = ''
+    ctx.password = ''
+    ctx.rusername = ''
+    ctx.rpassword = ''
+    ctx.email = ''
+    ctx.phonenum = ''
+    ctx.rre = 0
     ctx.cvalue = 1
     ctx.pickdata = 0
     ctx.num = 0
     ctx.nockname = 0
     ctx.join = 0
+    ctx.joinn = 0
     ctx.loginon = 0
+    ctx.register = 0
     ctx.back = false
     ctx.rid = 0  //获取data数据里的rid
     ctx.masterKey
@@ -50,6 +58,8 @@ export default class Main {
     ctx.card1 = 0
     ctx.changecard = 1
     ctx.phu = []
+    ctx.name = []
+    ctx.query = []
     for (this.i = 0; this.i <= 13; this.i++) {
       var num1 = Math.floor(Math.random() * 34)
       ctx.data[this.i] = num1
@@ -149,13 +159,25 @@ export default class Main {
               {
                 ctx.status = !ctx.status
                 ctx.data[i] = Math.floor(Math.random() * 34)
+                setTimeout(function () {
+                  if (ctx.objectid1) {
+                    const query = ctx.bmob.Query('_User');
+                    query.get(ctx.objectid).then(res => {
+                      ctx.showcard = res.cardData1
+                    }).catch(err => {
+                      console.log(err)
+                    })
+                    console.log("input=", ctx.showcard);
+                    ctx.makesure = 1
+                  }
+                }, 500)
               }
             }
          }      
     }
 
     //判断输入username
-    if (x >= screenWidth / 2 + 126 && x <= screenWidth / 2 + 252 && y <= screenHeight / 2 - 30 && y >= screenHeight / 2 - 40 && ctx.loginon != 2)
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y <= screenHeight / 2 - 24 && y >= screenHeight / 2 - 39 && ctx.loginon != 2 && !ctx.register)
     {
       wx.showKeyboard({
         defaultValue: 0,
@@ -168,7 +190,7 @@ export default class Main {
     }
 
     //判断输入password
-    if (x >= screenWidth / 2 + 126 && x <= screenWidth / 2 + 252 && y <= screenHeight / 2 - 4 && y >= screenHeight / 2 - 14 && ctx.loginon != 2) 
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y <= screenHeight / 2 + 10 && y >= screenHeight / 2 - 5 && ctx.loginon != 2 && !ctx.register) 
     {
       wx.showKeyboard({
         defaultValue: 0,
@@ -179,6 +201,67 @@ export default class Main {
       });
       ctx.cvalue = 3;
     }
+    //注册输入
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y >= screenHeight
+      / 2 - 51 && y <= screenHeight / 2 - 37 && ctx.register && ctx.loginon != 2)
+    {
+        wx.showKeyboard({
+          defaultValue: 0,
+          maxLength: 20,
+          multiple: false,
+          confirmHold: true,
+          confirmType: 'done'
+        });
+        ctx.cvalue = 4;
+    }
+
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y >= screenHeight
+      / 2 - 20 && y <= screenHeight / 2 - 6 && ctx.register && ctx.loginon != 2) 
+    {
+      wx.showKeyboard({
+        defaultValue: 0,
+        maxLength: 20,
+        multiple: false,
+        confirmHold: true,
+        confirmType: 'done'
+      });
+        ctx.cvalue = 5;
+    }
+
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y >= screenHeight
+      / 2 + 13 && y <= screenHeight / 2 + 27 && ctx.register && ctx.loginon != 2) 
+    {
+      wx.showKeyboard({
+        defaultValue: 0,
+        maxLength: 20,
+        multiple: false,
+        confirmHold: true,
+        confirmType: 'done'
+      });
+        ctx.cvalue = 6;
+    }
+
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y >= screenHeight
+      / 2 + 45 && y <= screenHeight / 2 + 59 && ctx.register && ctx.loginon != 2) 
+    {
+      wx.showKeyboard({
+        defaultValue: 0,
+        maxLength: 20,
+        multiple: false,
+        confirmHold: true,
+        confirmType: 'done'
+      });
+        ctx.cvalue = 7;
+    }
+
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y >= screenHeight
+      / 2 + 100 && y <= screenHeight / 2 + 114 && ctx.register && ctx.loginon != 2)
+      {
+        ctx.rre = 1;
+        ctx.register = 0;
+        this.single = 0;
+      }
+
     setTimeout(function () {
       if (ctx.objectid1) {
         const query = ctx.bmob.Query('_User');
@@ -188,15 +271,21 @@ export default class Main {
           console.log(err)
         })
         console.log("input=", ctx.showcard);
-        ctx.makesure = 1
       }
     }, 500)
 
-    if (x >= screenWidth / 2 + 127 && x <= screenWidth / 2 + 252 && y >= 
-      screenHeight / 2 + 12 && y <= screenHeight / 2 + 34 && ctx.loginon != 2)
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y >= 
+      screenHeight / 2 + 44 && y <= screenHeight / 2 + 59 && ctx.loginon != 2 
+      && !ctx.register && ctx.username && ctx.password)
       {
         ctx.loginon = 2;
-        console.log(ctx.loginon);
+        this.single = 0;
+      }
+
+    if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y>= 
+      screenHeight / 2 + 74 && y <= screenHeight / 2 + 89)
+      {
+        ctx.register = 1;
       }
 
     //创建房间列表
@@ -250,10 +339,6 @@ export default class Main {
       canvas.addEventListener('touchstart', this.touchHandler);
       this.onKeyboardOK = this.onKeyboardConfirm.bind(this);
       wx.onKeyboardConfirm(this.onKeyboardConfirm);
-      ctx.worker = wx.createWorker('workers/request/index.js')
-      ctx.worker.postMessage({
-        msg: ctx
-      })
       ctx.loginon = 0;
       this.time = 1;
     }
@@ -262,6 +347,10 @@ export default class Main {
     {
         if (ctx.loginon == 2 && this.single == 0) {
           this.room.onStart(ctx);
+          this.single = 1;
+        }
+        if (ctx.rre == 1 && this.single == 0){
+          this.room.tryregister(ctx);
           this.single = 1;
         }
         this.bg.render(ctx);
@@ -341,6 +430,7 @@ export default class Main {
     if (!value)
       return;
     value = value.value;
+    //登录
     if(ctx.cvalue == 2)
     {
       ctx.username = value;
@@ -348,6 +438,23 @@ export default class Main {
     if(ctx.cvalue == 3)
     {
       ctx.password = value;
+    }
+    //注册
+    if(ctx.cvalue == 4)
+    {
+      ctx.rusername = value;
+    }
+    if(ctx.cvalue == 5)
+    {
+      ctx.rpassword = value;
+    }
+    if(ctx.cvalue == 6)
+    {
+      ctx.email = value;
+    }
+    if(ctx.cvalue == 7)
+    {
+      ctx.phonenum = value;
     }
   }
 }

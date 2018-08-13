@@ -5,8 +5,11 @@ let bc = new Image()
 bc.src = 'images/bcroom.jpg'
 let atlas = new Image()
 atlas.src = 'images/btn_enter_room.png'
+let page = new Image()
+page.src = 'images/Title.png'
 let c = 0
-let name = 0
+var i = 0
+var name = []
 var createid = false
 var roomid = 0
 var ObjectId = "id"
@@ -37,9 +40,33 @@ export default class Gamehu {
     });
   }
 
+  tryregister(ctx) {
+      let params = {
+        username: ctx.rusername,
+        password: ctx.rpassword,
+        email: ctx.email,
+        phone: ctx.phonenum,
+      }
+      Bmob.User.register(params).then(res => {
+        console.log(res)
+      }).catch(err => {
+        console.log(err)
+      });
+  }
+
   alert(msg) {
     this.alertText = msg;
     console.log(msg)
+  }
+
+  anpai(ctx) {
+    const query = Bmob.Query('_User');
+    query.equalTo("createid", "==", true);
+    query.order("roomid");
+    query.find().then(res => {
+      console.log(res[ctx.i].username)
+      ctx.name[ctx.i] = res[ctx.i].username
+    });
   }
 
   renderroom(ctx){
@@ -73,64 +100,77 @@ export default class Gamehu {
       0, 0, 900, 506,
       0, 0, screenWidth, screenHeight
     )
-    if (ctx.c == 3 && !ctx.join) {
+    
+    if (!ctx.join) {
       const query = Bmob.Query('_User');
       query.get(ObjectId).then(res => {
         name = res.name
         roomid = res.roomid
         createid = res.createid
-        console.log("success,name =", res.roomid)
-        
+        console.log("success,name =", res.roomid)        
       }).catch(err => {
         console.log(err)
       })
-      
+      query.equalTo("createid", "==", true);
+      query.order("roomid");
+      query.count().then(res => {
+        console.log(res)
+        roomid = res
+      }); 
+      setTimeout(function(){
+        console.log("roomnum=",roomid)
+          query.equalTo("createid", "==", true);
+          query.order("roomid");
+          query.find().then(res => {
+            for (this.i = 0; this.i < roomid; this.i++) {       
+              console.log(res[this.i].username)
+              ctx.name[this.i] = res[this.i].username
+            }
+          });
+      },2000)
       ctx.join = 1
     }
-   
-
-    for (var i = 0 ; i <= roomid - 1; i++) {
-      
+    
+    ctx.font = "16px Arial"
+    for (var i = 1 ; i <= roomid; i++) {
       ctx.fillText(
         '房间号:',
-        5, 70 + i * 80
+        5, 70 + (i - 1) * 150
       )
       ctx.fillText(
         i,
-        75, 70 + i * 80
+        75, 70 + (i - 1) * 150
       )
-      if(createid)
-      {
-        ctx.fillText(
-          '房主:',
-          105, 70 + i * 80
-        )
-        ctx.fillText(
-          name,
-          155, 70 + i * 80
-        )
-      }else{
-        ctx.fillText(
-          '玩家:',
-          105, 70 + i * 80
-        )
-        ctx.fillText(
-          name,
-          155, 70 + i * 80
-        )
-      }
+      ctx.fillText(
+        '房主:',
+        105, 70 + (i - 1) * 150
+      )
+      ctx.fillText(
+        ctx.name[i-1],
+        155, 70 + (i - 1) * 150
+      )
       ctx.fillText(
         '房间人数:',
-        240, 70 + i * 80
+        240, 70 + (i - 1) * 150
       )
       ctx.fillText(
         4,
-        330, 70 + i * 80
+        330, 70 + (i - 1) * 150
       )
       ctx.drawImage(
         atlas,
         0, 0, 383, 159,
-        380, 40 + i * 80, 120,40
+        380, 40 + (i - 1) * 150, 120,40
+      )
+      ctx.drawImage(
+        page,
+        109, 34,123,45,
+        530, 140,14,11
+      )
+      ctx.drawImage(
+        page,
+        109, 34, 123, 45,
+        530, 180, 14, 11
       )
       if (!join) {
         console.log(roomid)
@@ -183,3 +223,4 @@ export default class Gamehu {
     }
   }
 }
+
