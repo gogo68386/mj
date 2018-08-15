@@ -31,6 +31,8 @@ export default class Main {
     ctx.rpassword = ''
     ctx.email = ''
     ctx.phonenum = ''
+    ctx.roomid = 0
+    ctx.roomidd = 0
     ctx.rre = 0
     ctx.cvalue = 1
     ctx.pickdata = 0
@@ -38,6 +40,8 @@ export default class Main {
     ctx.nockname = 0
     ctx.join = 0
     ctx.joinn = 0
+    ctx.joinnn = 0
+    ctx.createid = false
     ctx.loginon = 0
     ctx.register = 0
     ctx.back = false
@@ -59,7 +63,6 @@ export default class Main {
     ctx.changecard = 1
     ctx.phu = []
     ctx.name = []
-    ctx.query = []
     for (this.i = 0; this.i <= 13; this.i++) {
       var num1 = Math.floor(Math.random() * 34)
       ctx.data[this.i] = num1
@@ -180,7 +183,7 @@ export default class Main {
     if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y <= screenHeight / 2 - 24 && y >= screenHeight / 2 - 39 && ctx.loginon != 2 && !ctx.register)
     {
       wx.showKeyboard({
-        defaultValue: 0,
+        defaultValue: '',
         maxLength: 20,
         multiple: false,
         confirmHold: true,
@@ -193,7 +196,7 @@ export default class Main {
     if (x >= screenWidth / 2 + 101 && x <= screenWidth / 2 + 260 && y <= screenHeight / 2 + 10 && y >= screenHeight / 2 - 5 && ctx.loginon != 2 && !ctx.register) 
     {
       wx.showKeyboard({
-        defaultValue: 0,
+        defaultValue: '',
         maxLength: 20,
         multiple: false,
         confirmHold: true,
@@ -206,7 +209,7 @@ export default class Main {
       / 2 - 51 && y <= screenHeight / 2 - 37 && ctx.register && ctx.loginon != 2)
     {
         wx.showKeyboard({
-          defaultValue: 0,
+          defaultValue: '',
           maxLength: 20,
           multiple: false,
           confirmHold: true,
@@ -219,7 +222,7 @@ export default class Main {
       / 2 - 20 && y <= screenHeight / 2 - 6 && ctx.register && ctx.loginon != 2) 
     {
       wx.showKeyboard({
-        defaultValue: 0,
+        defaultValue: '',
         maxLength: 20,
         multiple: false,
         confirmHold: true,
@@ -232,7 +235,7 @@ export default class Main {
       / 2 + 13 && y <= screenHeight / 2 + 27 && ctx.register && ctx.loginon != 2) 
     {
       wx.showKeyboard({
-        defaultValue: 0,
+        defaultValue: '',
         maxLength: 20,
         multiple: false,
         confirmHold: true,
@@ -245,7 +248,7 @@ export default class Main {
       / 2 + 45 && y <= screenHeight / 2 + 59 && ctx.register && ctx.loginon != 2) 
     {
       wx.showKeyboard({
-        defaultValue: 0,
+        defaultValue: '',
         maxLength: 20,
         multiple: false,
         confirmHold: true,
@@ -310,7 +313,7 @@ export default class Main {
       }
 
     //大厅界面
-    if (x >= ctx.width/2 + 129 && x <= ctx.width/2 + 249 && y >= ctx.height/2 - 100 && y <= ctx.height/2 -60 && !ctx.back)
+    if (x >= ctx.width/2 + 129 && x <= ctx.width/2 + 249 && y >= ctx.height/2 - 130 && y <= ctx.height/2 -90 && !ctx.back)
       {
         ctx.c = 0
         render()
@@ -320,6 +323,7 @@ export default class Main {
     //game界面
     if (x >= 380 && x <= 530 && ctx.join)
       {
+        console.log("ctx.join =",ctx.join)
         ctx.c = 1
         ctx.join = 1
         ctx.back = false

@@ -11,7 +11,6 @@ let c = 0
 var i = 0
 var name = []
 var createid = false
-var roomid = 0
 var ObjectId = "id"
 var join = 0
 //加载Bmob的sdk
@@ -32,12 +31,33 @@ export default class Gamehu {
     Bmob.User.login(ctx.username, ctx.password).then(res => {
       ObjectId = res.objectId
       ctx.objectid = ObjectId
+      ctx.roomid = res.roomid
+      ctx.createid = res.createid
       console.log(res.objectId)
       console.log("ObjectId=",ObjectId)
       ctx.bmob = Bmob
     }).catch(err => {
       console.log(err)
     });
+    //给房间列表赋值，并获取房间号
+    const query = Bmob.Query('_User');
+    query.equalTo("createid", "==", true);
+    query.order("roomid");
+    query.count().then(res => {
+      console.log(res)
+      ctx.roomidd = res;
+      console.log("ctx.roomidd=", ctx.roomidd);
+    });
+    setTimeout(function () {
+      query.equalTo("createid", "==", true);
+      query.order("roomid");
+      query.find().then(res => {
+        for (this.i = 0; this.i <= ctx.roomidd; this.i++) {
+          console.log(res[this.i].roomid)
+          ctx.name[this.i] = res[this.i].username
+        }
+      });
+    }, 0)
   }
 
   tryregister(ctx) {
@@ -59,168 +79,211 @@ export default class Gamehu {
     console.log(msg)
   }
 
-  anpai(ctx) {
-    const query = Bmob.Query('_User');
-    query.equalTo("createid", "==", true);
-    query.order("roomid");
-    query.find().then(res => {
-      console.log(res[ctx.i].username)
-      ctx.name[ctx.i] = res[ctx.i].username
-    });
-  }
-
   renderroom(ctx){
-    
+    //创建房间并对createid赋值为true
     if(!ctx.join && ctx.c != 3)//此处只能执行一次
     {
-      // model.CreateRoom(model.getUserId(),4,console.log("创建房间成功!"),ctx);
-      setTimeout(function(){console.log(ctx.rid)},1500);
-      // ctx.c = 1
       const query = Bmob.Query('_User');
       query.get(ObjectId).then(res => {
-        console.log("success,name =", res.name)
-        name = res.name
-        roomid = res.roomid
+        ctx.roomid = res.roomid
+        ctx.createid = res.createid
       }).catch(err => {
         console.log(err)
       })
-      const query1 = Bmob.Query('_User');
-      query1.get(ObjectId).then(res => {
-        console.log(res)
-        res.set('createid', true)
-        res.save()
-      }).catch(err => {
-        console.log(err)
-      })
+      console.log("1roomid =",ctx.roomid);
+      setTimeout(function(){
+        console.log("createid1 =", ctx.createid);
+      },1000)
+      if(!ctx.createid){
+        query.get(ObjectId).then(res => {
+          console.log(res)
+          res.set('createid', true)
+          res.save()
+        }).catch(err => {
+          console.log(err)
+        })
+      }
       ctx.join = 1
     }
-    
+    //绘制背景图片
     ctx.drawImage(
       bc,
       0, 0, 900, 506,
       0, 0, screenWidth, screenHeight
     )
-    
-    if (!ctx.join) {
-      const query = Bmob.Query('_User');
-      query.get(ObjectId).then(res => {
-        name = res.name
-        roomid = res.roomid
-        createid = res.createid
-        console.log("success,name =", res.roomid)        
-      }).catch(err => {
-        console.log(err)
-      })
-      query.equalTo("createid", "==", true);
-      query.order("roomid");
-      query.count().then(res => {
-        console.log(res)
-        roomid = res
-      }); 
+
+    if (ctx.c != 3) {
       setTimeout(function(){
-        console.log("roomnum=",roomid)
+        console.log("ictx.createid=", ctx.createid);        
+      },1000)
+      if (!ctx.joinnn && !ctx.createid){
+        const query = Bmob.Query('_User');
+          query.get(ObjectId).then(res => {
+          console.log(res)
+          res.set('roomid', ctx.roomidd)
+          res.save()
+        }).catch(err => {
+          console.log(err)
+        })
+        console.log("Helloworld!");
+        query.equalTo("createid", "==", true);
+        query.order("roomid");
+        query.count().then(res => {
+          console.log(res)
+          ctx.roomidd = res + 1;
+          // console.log("ctx.roomidd=", ctx.roomidd);
+        });
+        setTimeout(function () {
           query.equalTo("createid", "==", true);
           query.order("roomid");
           query.find().then(res => {
-            for (this.i = 0; this.i < roomid; this.i++) {       
-              console.log(res[this.i].username)
+            for (this.i = 0; this.i <= ctx.roomidd-1; this.i++) {
+              console.log(res[this.i].roomid)
               ctx.name[this.i] = res[this.i].username
             }
           });
-      },2000)
-      ctx.join = 1
-    }
-    
-    ctx.font = "16px Arial"
-    for (var i = 1 ; i <= roomid; i++) {
+        }, 1000)
+        ctx.joinnn = 1;
+      }
       ctx.fillText(
         '房间号:',
-        5, 70 + (i - 1) * 150
+        5, 70
       )
-      ctx.fillText(
-        i,
-        75, 70 + (i - 1) * 150
-      )
+      if (ctx.createid) {
+        // console.log("1=",ctx.roomid)
+        ctx.fillText(
+          ctx.roomid,
+          75, 70
+        )
+      } else {
+        // console.log("2=",ctx.roomidd)
+        ctx.fillText(
+          ctx.roomidd,
+          75, 70
+        )
+      }
       ctx.fillText(
         '房主:',
-        105, 70 + (i - 1) * 150
+        105, 70
       )
       ctx.fillText(
-        ctx.name[i-1],
-        155, 70 + (i - 1) * 150
+        ctx.username,
+        155, 70
       )
       ctx.fillText(
         '房间人数:',
-        240, 70 + (i - 1) * 150
+        240, 70
       )
       ctx.fillText(
         4,
-        330, 70 + (i - 1) * 150
+        330, 70
+      )
+      ctx.fillText(
+        '等待玩家加入...',
+        380, 70
       )
       ctx.drawImage(
         atlas,
         0, 0, 383, 159,
-        380, 40 + (i - 1) * 150, 120,40
+        380, 120, 120, 40
       )
-      ctx.drawImage(
-        page,
-        109, 34,123,45,
-        530, 140,14,11
-      )
-      ctx.drawImage(
-        page,
-        109, 34, 123, 45,
-        530, 180, 14, 11
-      )
-      if (!join) {
-        console.log(roomid)
-        const query1 = Bmob.Query('_Role');
-        if (roomid == 1) {
-          query1.get('s0zG3339').then(res => {
-            console.log(res)
-            res.set('userobjectid', ObjectId)
-            res.save()
-          }).catch(err => {
-            console.log(err)
-          });
-        } else if (roomid == 2) {
-          console.log("switch case in");
-          query1.get('s0zG3339').then(res => {
-            console.log(res)
-            res.set('userobjectid1', ObjectId)
-            res.save()
-          }).catch(err => {
-            console.log(err)
-          });
-        } else if (roomid == 3) {
-          query1.get('s0zG3339').then(res => {
-            console.log(res)
-            res.set('userobjectid2', ObjectId)
-            res.save()
-          }).catch(err => {
-            console.log(err)
-          });
-        } else {
-          query1.get('s0zG3339').then(res => {
-            console.log(res)
-            res.set('userobjectid3', ObjectId)
-            res.save()
-          }).catch(err => {
-            console.log(err)
-          });
-        }
-        query1.get('s0zG3339').then(res => {
-          console.log("success=", res.userobjectid, res.userobjectid1, res.userobjectid2, res.userobjectid3);
-          ctx.objectid1 = res.userobjectid
-          ctx.objectid2 = res.userobjectid1
-          ctx.objectid3 = res.userobjectid2
-          ctx.objectid4 = res.userobjectid3
-        }).catch(err => {
-          console.log(err)
-        })
-        join = 1;
+    }
+    ctx.font = "16px Arial"
+    if (ctx.c == 3) {
+      ctx.join = 1;
+    // console.log("ctx.roomidd_1=",ctx.roomidd);
+    for (var i = 1; i <= ctx.roomidd; i++) {
+        
+        ctx.fillText(
+          '房间号:',
+          5, 70 + (i - 1) * 80
+        )
+        ctx.fillText(
+          i,
+          75, 70 + (i - 1) * 80
+        )
+        ctx.fillText(
+          '房主:',
+          105, 70 + (i - 1) * 80
+        )
+        ctx.fillText(
+          ctx.name[i - 1],
+          155, 70 + (i - 1) * 80
+        )
+        ctx.fillText(
+          '房间人数:',
+          240, 70 + (i - 1) * 80
+        )
+        ctx.fillText(
+          4,
+          330, 70 + (i - 1) * 80
+        )
+        ctx.drawImage(
+          atlas,
+          0, 0, 383, 159,
+          380, 40 + (i - 1) * 80, 120, 40
+        )
+        ctx.drawImage(
+          page,
+          109, 34, 123, 45,
+          530, 140, 14, 11
+        )
+        ctx.drawImage(
+          page,
+          109, 34, 123, 45,
+          530, 180, 14, 11
+        )
       }
     }
-  }
-}
+  
+      // if(!join){
+      // const query1 = Bmob.Query('_Role');
+      // if (roomid == 1) {
+      //   query1.get('s0zG3339').then(res => {
+      //     console.log(res)
+      //     res.set('userobjectid', ObjectId)
+      //     res.save()
+      //   }).catch(err => {
+      //     console.log(err)
+      //   });
+      // } else if (roomid == 2) {
+      //   console.log("switch case in");
+      //   query1.get('s0zG3339').then(res => {
+      //     console.log(res)
+      //     res.set('userobjectid1', ObjectId)
+      //     res.save()
+      //   }).catch(err => {
+      //     console.log(err)
+      //   });
+      // } else if (roomid == 3) {
+      //   query1.get('s0zG3339').then(res => {
+      //     console.log(res)
+      //     res.set('userobjectid2', ObjectId)
+      //     res.save()
+      //   }).catch(err => {
+      //     console.log(err)
+      //   });
+      // } else {
+      //   query1.get('s0zG3339').then(res => {
+      //     console.log(res)
+      //     res.set('userobjectid3', ObjectId)
+      //     res.save()
+      //   }).catch(err => {
+      //     console.log(err)
+      //   });
+      // }
+      // query1.get('s0zG3339').then(res => {
+      //   console.log("success=", res.userobjectid, res.userobjectid1, res.userobjectid2, res.userobjectid3);
+      //   ctx.objectid1 = res.userobjectid
+      //   ctx.objectid2 = res.userobjectid1
+      //   ctx.objectid3 = res.userobjectid2
+      //   ctx.objectid4 = res.userobjectid3
+      // }).catch(err => {
+      //   console.log(err)
+      // })
+      // join = 1;
+      // }
+    } 
+}       
+
 

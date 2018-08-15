@@ -71,7 +71,7 @@ export default class GameBegin {
         atlas2,
         0, 0, 383, 159,
         screenWidth / 2 + 129,
-        screenHeight / 2 - 100,
+        screenHeight / 2 - 130,
         120, 40
       )
       if(ctx.makesure == 1)
